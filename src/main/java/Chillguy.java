@@ -1,3 +1,8 @@
+import java.util.Scanner;
+
+/**
+ * Runs the Chillguy chatbot.
+ */
 public class Chillguy {
     public static void main(String[] args) {
         String separator = "_".repeat(60);
@@ -12,7 +17,19 @@ public class Chillguy {
         System.out.println("Hello! I'm Chillguy.");
         System.out.println("What can I do for you?");
         System.out.println(separator);
-        System.out.println("Bye. Hope to see you again soon!");
-        System.out.println(separator);
+
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String command = scanner.nextLine();
+
+            if (command.equals("bye")) {
+                System.out.println("Bye. Hope to see you again soon!");
+                System.out.println(separator);
+                break;
+            }
+
+            System.out.println(command);
+            System.out.println(separator);
+        }
     }
 }
