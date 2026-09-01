@@ -4,8 +4,8 @@ package chillguy;
  * Represents a task with a description and done status.
  */
 public class Task {
-    protected String description;
-    protected boolean isDone;
+    private final String description;
+    private boolean isDone;
 
     /**
      * Creates a task that is not done yet.
