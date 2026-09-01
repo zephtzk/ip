@@ -1,3 +1,5 @@
+package chillguy;
+
 /**
  * Represents a task with a description and done status.
  */
@@ -8,7 +10,7 @@ public class Task {
     /**
      * Creates a task that is not done yet.
      *
-     * @param description description of the task
+     * @param description Description of the task.
      */
     public Task(String description) {
         this.description = description;
@@ -18,7 +20,7 @@ public class Task {
     /**
      * Returns the status icon shown in task lists.
      *
-     * @return {@code X} if the task is done, or a blank space otherwise
+     * @return {@code X} if the task is done, or a blank space otherwise.
      */
     public String getStatusIcon() {
         return isDone ? "X" : " ";

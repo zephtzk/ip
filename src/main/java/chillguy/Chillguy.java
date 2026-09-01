@@ -1,3 +1,5 @@
+package chillguy;
+
 import java.util.Scanner;
 
 /**
@@ -11,7 +13,7 @@ public class Chillguy {
      * Ordinary text is stored as a task, {@code list} displays all stored tasks,
      * {@code mark INDEX} marks a task as done, and {@code unmark INDEX} marks a task as not done.
      *
-     * @param args command-line arguments, which are not used
+     * @param args Command-line arguments, which are not used.
      */
     public static void main(String[] args) {
         String separator = "_".repeat(60);
