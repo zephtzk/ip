@@ -34,6 +34,7 @@ For all Java code in this project, follow the project-specific `$seedu-java-codi
 
 ## Git
 
+For all future commits in this project, follow the project-specific `$seedu-git-standard` skill. Load and apply that skill before proposing, drafting, reviewing, or creating commit messages.
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
