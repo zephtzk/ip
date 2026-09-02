@@ -3,7 +3,7 @@ package chillguy;
 /**
  * Represents a task with a description and done status.
  */
-public class Task {
+public abstract class Task {
     private final String description;
     private boolean isDone;
 
@@ -40,8 +40,15 @@ public class Task {
         isDone = false;
     }
 
+    /**
+     * Returns the icon representing this task's type.
+     *
+     * @return Task type icon.
+     */
+    public abstract String getTaskTypeIcon();
+
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + getTaskTypeIcon() + "][" + getStatusIcon() + "] " + description;
     }
 }
