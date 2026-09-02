@@ -124,3 +124,69 @@ ____________________________________________________________
 ```
 
 - Notes: Dates and times are treated as plain strings.
+
+### Reject Malformed Deadline
+
+- Aim: Verifies that a deadline command without `/by` shows an error message instead of crashing.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+deadline byebye /today 6pm
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: The app should keep running after the error and handle the next command.
+
+### Reject Malformed Event
+
+- Aim: Verifies that an event command without `/to` shows an error message instead of crashing.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+event meeting /from Monday 2pm
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: The app should keep running after the error and handle the next command.

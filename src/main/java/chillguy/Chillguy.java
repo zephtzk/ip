@@ -20,6 +20,10 @@ public class Chillguy {
     private static final String BY_SEPARATOR = " /by ";
     private static final String FROM_SEPARATOR = " /from ";
     private static final String TO_SEPARATOR = " /to ";
+    private static final String DEADLINE_FORMAT_MESSAGE =
+            "Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE";
+    private static final String EVENT_FORMAT_MESSAGE =
+            "Sorry, event tasks need this format: event DESCRIPTION /from START /to END";
     private static final String BANNER = "   _____ _   _ ___ _     _      _____ _   _ __   __\n"
             + "  / ____| | | |_ _| |   | |    / ____| | | |\\ \\ / /\n"
             + " | |    | |_| || || |   | |   | |  __| | | | \\ V /\n"
@@ -157,6 +161,11 @@ public class Chillguy {
     private void addDeadline(String command) {
         String details = command.substring(DEADLINE_COMMAND_PREFIX.length());
         int byIndex = details.indexOf(BY_SEPARATOR);
+        if (!isValidDeadlineDetails(details, byIndex)) {
+            showError(DEADLINE_FORMAT_MESSAGE);
+            return;
+        }
+
         String description = details.substring(0, byIndex);
         String by = details.substring(byIndex + BY_SEPARATOR.length());
         addTask(new Deadline(description, by));
@@ -166,10 +175,25 @@ public class Chillguy {
         String details = command.substring(EVENT_COMMAND_PREFIX.length());
         int fromIndex = details.indexOf(FROM_SEPARATOR);
         int toIndex = details.indexOf(TO_SEPARATOR);
+        if (!isValidEventDetails(details, fromIndex, toIndex)) {
+            showError(EVENT_FORMAT_MESSAGE);
+            return;
+        }
+
         String description = details.substring(0, fromIndex);
         String from = details.substring(fromIndex + FROM_SEPARATOR.length(), toIndex);
         String to = details.substring(toIndex + TO_SEPARATOR.length());
         addTask(new Event(description, from, to));
+    }
+
+    private boolean isValidDeadlineDetails(String details, int byIndex) {
+        return byIndex > 0 && byIndex + BY_SEPARATOR.length() < details.length();
+    }
+
+    private boolean isValidEventDetails(String details, int fromIndex, int toIndex) {
+        return fromIndex > 0
+                && toIndex > fromIndex + FROM_SEPARATOR.length()
+                && toIndex + TO_SEPARATOR.length() < details.length();
     }
 
     private void addTask(Task task) {
@@ -178,5 +202,9 @@ public class Chillguy {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
         System.out.println("Now you have " + getTaskCountLabel() + " in the list.");
+    }
+
+    private void showError(String message) {
+        System.out.println(message);
     }
 }
