@@ -1,4 +1,4 @@
-package chillguy;
+package chillguy.exception;
 
 /**
  * Represents invalid user input that the chatbot can explain and recover from.

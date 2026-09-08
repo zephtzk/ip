@@ -12,7 +12,7 @@ javac -version
 javac 25.0.4
 ```
 
-Build: `javac -d out src/main/java/chillguy/*.java`
+Build: `javac -d out src/main/java/chillguy/Chillguy.java src/main/java/chillguy/exception/ChillguyException.java src/main/java/chillguy/task/Deadline.java src/main/java/chillguy/task/Event.java src/main/java/chillguy/task/Task.java src/main/java/chillguy/task/Todo.java`
 
 ## Delete Task: PASS
 

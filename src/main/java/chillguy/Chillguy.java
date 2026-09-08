@@ -2,6 +2,12 @@ package chillguy;
 
 import java.util.Scanner;
 
+import chillguy.exception.ChillguyException;
+import chillguy.task.Deadline;
+import chillguy.task.Event;
+import chillguy.task.Task;
+import chillguy.task.Todo;
+
 /**
  * Runs the Chillguy chatbot.
  */

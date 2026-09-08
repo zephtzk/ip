@@ -66,7 +66,7 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-- Notes: Compile first with `javac -d out src\main\java\chillguy\*.java`.
+- Notes: The runner compiles all Java files recursively under `src/main/java`, including subpackages, before running the cases.
 
 ### Add Level 4 Task Types
 
