@@ -1,4 +1,4 @@
-package chillguy;
+package chillguy.task;
 
 /**
  * Represents a task without any date or time.

@@ -1,4 +1,4 @@
-package chillguy;
+package chillguy.task;
 
 /**
  * Represents a task with a description and done status.

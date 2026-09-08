@@ -37,7 +37,8 @@ def main():
 
     sources = sorted(str(path) for path in (ROOT / "src/main/java").rglob("*.java"))
     build = subprocess.run(["javac", "-d", "out", *sources], capture_output=True, text=True, cwd=ROOT)
-    transcript.append("Build: `javac -d out src/main/java/chillguy/*.java`\n")
+    source_paths = " ".join(Path(source).relative_to(ROOT).as_posix() for source in sources)
+    transcript.append(f"Build: `javac -d out {source_paths}`\n")
     if build.returncode or build.stdout or build.stderr:
         transcript.append(f"```text\n{build.stdout}{build.stderr}```\n")
         TRANSCRIPT.write_text("\n".join(transcript), encoding="utf-8")
