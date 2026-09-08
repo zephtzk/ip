@@ -2,6 +2,8 @@
 
 This file records console UI test cases for this project. Update it whenever a code change affects commands, console inputs, or expected output.
 
+Run all cases with Java 25 and Python 3 using `python test/run-ui-tests.py`. The runner compiles the app, compares exact output and stderr, stops at the first failure, and writes `test/ui-test-transcript.md`.
+
 ## Test Case Format
 
 Each test case should include:
@@ -190,3 +192,584 @@ ____________________________________________________________
 ```
 
 - Notes: The app should keep running after the error and handle the next command.
+
+### Reject Unknown and Empty Commands
+
+- Aim: Verifies errors never create tasks, exact command names are required, extra arguments do not exit, and surrounding spaces and tabs are accepted.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+
+   	  
+todo
+todo   
+blah
+read a book
+todos book
+TODO book
+list
+  todo	read book  
+list extra
+bye now
+mark	1
+blah
+  list  
+unmark  1 
+delete 1
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Please enter a command, such as todo DESCRIPTION or list.
+____________________________________________________________
+____________________________________________________________
+Please enter a command, such as todo DESCRIPTION or list.
+____________________________________________________________
+____________________________________________________________
+ERROR: Description of todo cannot be empty.
+____________________________________________________________
+____________________________________________________________
+ERROR: Description of todo cannot be empty.
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+The list command takes no extra input. Use: list
+____________________________________________________________
+____________________________________________________________
+The bye command takes no extra input. Use: bye
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] read book
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: Literal tabs and spaces in the input are intentional. No errors may alter task count or status.
+
+### Validate Task Numbers and Preserve State
+
+- Aim: Verifies missing, nonnumeric, fractional, multiple, overflowing, zero, negative, and out-of-range indices for all three modifying commands, including empty and shifted lists.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+mark
+mark 1
+unmark
+unmark 1
+delete
+delete 1
+todo first
+todo second
+mark 2
+mark abc
+mark 1.5
+mark 1 2
+mark 999999999999999999999
+mark -2147483649
+mark 0
+mark -1
+mark -2147483648
+mark 3
+mark 2147483647
+list
+unmark abc
+unmark 1.5
+unmark 1 2
+unmark 999999999999999999999
+unmark -2147483649
+unmark 0
+unmark -1
+unmark -2147483648
+unmark 3
+unmark 2147483647
+list
+delete abc
+delete 1.5
+delete 1 2
+delete 999999999999999999999
+delete -2147483649
+delete 0
+delete -1
+delete -2147483648
+delete 3
+delete 2147483647
+list
+unmark 2
+delete 1
+delete 2
+mark 1
+list
+delete 1
+delete 1
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Please include a task number. Use: mark INDEX
+____________________________________________________________
+____________________________________________________________
+Your task list is empty. Add a task first with todo DESCRIPTION.
+____________________________________________________________
+____________________________________________________________
+Please include a task number. Use: unmark INDEX
+____________________________________________________________
+____________________________________________________________
+Your task list is empty. Add a task first with todo DESCRIPTION.
+____________________________________________________________
+____________________________________________________________
+Please include a task number. Use: delete INDEX
+____________________________________________________________
+____________________________________________________________
+Your task list is empty. Add a task first with todo DESCRIPTION.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] first
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] second
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] second
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: mark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: mark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: mark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: mark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: mark INDEX
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] first
+2.[T][X] second
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: unmark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: unmark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: unmark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: unmark INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: unmark INDEX
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] first
+2.[T][X] second
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: delete INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: delete INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: delete INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: delete INDEX
+____________________________________________________________
+____________________________________________________________
+Please enter one whole-number task index. Use: delete INDEX
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 2. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] first
+2.[T][X] second
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] second
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] first
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 1. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] second
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] second
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][X] second
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Your task list is empty. Add a task first with todo DESCRIPTION.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: List output after each invalid group must preserve both original tasks and their completion status.
+
+### Validate Task Fields and Recover
+
+- Aim: Verifies missing and blank descriptions and times, missing or repeated separators, reversed event separators, and successful recovery with all task types.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+todo keep
+deadline
+deadline   
+deadline /by Sunday
+deadline task
+deadline task /by
+deadline task /by   
+deadline task /by Sunday /by Monday
+deadline task /bySunday
+list
+deadline	return book	/by	Sunday  
+mark 2
+event
+event   
+event /from Monday /to Tuesday
+event meeting
+event meeting /from Monday
+event meeting /to Tuesday
+event meeting /from /to Tuesday
+event meeting /from Monday /to
+event meeting /from   /to Tuesday
+event meeting /from Monday /to   
+event meeting /to Tuesday /from Monday
+event meeting /from Monday /from Tuesday /to Wednesday
+event meeting /from Monday /to Tuesday /to Wednesday
+event meeting /fromMonday /to Tuesday
+list
+event	meeting	/from	Mon 2pm	/to	4pm  
+unmark 2
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] keep
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Sunday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Sorry, event tasks need this format: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep
+2.[D][X] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] meeting (from: Mon 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [D][ ] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep
+2.[D][ ] return book (by: Sunday)
+3.[E][ ] meeting (from: Mon 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: Dates and times remain free-form strings. Each required separator must be a separate token and occur exactly once.
+
+### Handle Full Task List and Reuse Space
+
+- Aim: Verifies the 100-task boundary rejects every task type without mutation and allows an addition after deletion.
+- Command: `java -cp out chillguy.Chillguy`
+- Input file: `test/fixtures/capacity.input.txt`
+- Expected output file: `test/fixtures/capacity.expected.txt`
+
+- Notes: Fixture files contain the complete literal session and exact output; no output is omitted from comparison.
+
+### End of Input After Error
+
+- Aim: Verifies the app exits cleanly when input ends after an error without a bye command.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+todo
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ERROR: Description of todo cannot be empty.
+____________________________________________________________
+```
+
+- Notes: The process receives EOF after the last input line; no goodbye message is expected.
+
+### End of Input Without Commands
+
+- Aim: Verifies EOF at startup prints only the greeting and exits cleanly.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+```
+
+- Notes: Input is empty; no command or goodbye output is expected.

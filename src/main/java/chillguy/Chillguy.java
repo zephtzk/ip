@@ -11,39 +11,34 @@ public class Chillguy {
     private static final String SEPARATOR = "_".repeat(SEPARATOR_LENGTH);
     private static final String EXIT_COMMAND = "bye";
     private static final String LIST_COMMAND = "list";
-    private static final String MARK_COMMAND_PREFIX = "mark ";
-    private static final String UNMARK_COMMAND_PREFIX = "unmark ";
-    private static final String DELETE_COMMAND_PREFIX = "delete ";
-    private static final String TODO_COMMAND_PREFIX = "todo ";
-    private static final String DEADLINE_COMMAND_PREFIX = "deadline ";
-    private static final String EVENT_COMMAND_PREFIX = "event ";
-    private static final String BY_SEPARATOR = " /by ";
-    private static final String FROM_SEPARATOR = " /from ";
-    private static final String TO_SEPARATOR = " /to ";
+    // Match standalone separator tokens, including at either end to detect missing fields.
+    private static final String BY_SEPARATOR = "(?<!\\S)/by(?=\\s|$)";
+    private static final String FROM_SEPARATOR = "(?<!\\S)/from(?=\\s|$)";
+    private static final String TO_SEPARATOR = "(?<!\\S)/to(?=\\s|$)";
     private static final String DEADLINE_FORMAT_MESSAGE =
             "Sorry, deadline tasks need this format: deadline DESCRIPTION /by DATE";
     private static final String EVENT_FORMAT_MESSAGE =
             "Sorry, event tasks need this format: event DESCRIPTION /from START /to END";
-    private static final String BANNER = "   _____ _   _ ___ _     _      _____ _   _ __   __\n"
-            + "  / ____| | | |_ _| |   | |    / ____| | | |\\ \\ / /\n"
-            + " | |    | |_| || || |   | |   | |  __| | | | \\ V /\n"
-            + " | |___ |  _  || || |___| |___| | |_ | |_| |  | |\n"
-            + "  \\____||_| |_|___|_____|______\\_____|____/   |_|";
+    private static final String BANNER = """
+               _____ _   _ ___ _     _      _____ _   _ __   __
+              / ____| | | |_ _| |   | |    / ____| | | |\\ \\ / /
+             | |    | |_| || || |   | |   | |  __| | | | \\ V /
+             | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+              \\____||_| |_|___|_____|______\\_____|____/   |_|\
+            """;
 
     private final Task[] tasks = new Task[MAX_TASKS];
     private int taskCount;
 
     /**
      * Starts the chatbot and processes commands until the user enters {@code bye}.
-     * Ordinary text is stored as a task, {@code list} displays all stored tasks,
+     * {@code list} displays all stored tasks,
      * {@code mark INDEX} marks a task as done, {@code unmark INDEX} marks a task as not done,
      * {@code delete INDEX} removes a task, {@code todo DESCRIPTION} adds a todo task,
      * {@code deadline DESCRIPTION /by DATE} adds a deadline task, and
      * {@code event DESCRIPTION /from START /to END} adds an event task.
-     *
-     * @param args Command-line arguments, which are not used.
      */
-    public static void main(String[] args) {
+    static void main() {
         new Chillguy().run();
     }
 
@@ -52,12 +47,16 @@ public class Chillguy {
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().strip();
             System.out.println(SEPARATOR);
 
-            boolean shouldExit = handleCommand(command);
-            if (shouldExit) {
-                break;
+            try {
+                boolean shouldExit = handleCommand(command);
+                if (shouldExit) {
+                    break;
+                }
+            } catch (ChillguyException exception) {
+                showError(exception.getMessage());
             }
 
             System.out.println(SEPARATOR);
@@ -72,31 +71,43 @@ public class Chillguy {
         System.out.println(SEPARATOR);
     }
 
-    private boolean handleCommand(String command) {
-        if (command.equals(EXIT_COMMAND)) {
-            showExitMessage();
-            return true;
+    /**
+     * Dispatches a command and reports invalid input before it can change the task list.
+     */
+    private boolean handleCommand(String command) throws ChillguyException {
+        if (command.isEmpty()) {
+            throw new ChillguyException("Please enter a command, such as todo DESCRIPTION or list.");
         }
 
-        if (command.equals(LIST_COMMAND)) {
-            showTasks();
-        } else if (command.startsWith(MARK_COMMAND_PREFIX)) {
-            markTaskAsDone(command);
-        } else if (command.startsWith(UNMARK_COMMAND_PREFIX)) {
-            markTaskAsNotDone(command);
-        } else if (command.startsWith(DELETE_COMMAND_PREFIX)) {
-            deleteTask(command);
-        } else if (command.startsWith(TODO_COMMAND_PREFIX)) {
-            addTodo(command);
-        } else if (command.startsWith(DEADLINE_COMMAND_PREFIX)) {
-            addDeadline(command);
-        } else if (command.startsWith(EVENT_COMMAND_PREFIX)) {
-            addEvent(command);
-        } else {
-            addTask(new Todo(command));
+        String[] commandParts = command.split("\\s+", 2);
+        String commandName = commandParts[0];
+        String arguments = commandParts.length == 2 ? commandParts[1].strip() : "";
+        switch (commandName) {
+            case EXIT_COMMAND -> {
+                requireNoArguments(commandName, arguments);
+                showExitMessage();
+                return true;
+            }
+            case LIST_COMMAND -> {
+                requireNoArguments(commandName, arguments);
+                showTasks();
+            }
+            case "mark" -> markTaskAsDone(arguments);
+            case "unmark" -> markTaskAsNotDone(arguments);
+            case "delete" -> deleteTask(arguments);
+            case "todo" -> addTodo(arguments);
+            case "deadline" -> addDeadline(arguments);
+            case "event" -> addEvent(arguments);
+            default -> throw new ChillguyException("ERROR: Unknown command.");
         }
 
         return false;
+    }
+
+    private void requireNoArguments(String commandName, String arguments) throws ChillguyException {
+        if (!arguments.isEmpty()) {
+            throw new ChillguyException("The " + commandName + " command takes no extra input. Use: " + commandName);
+        }
     }
 
     private void showExitMessage() {
@@ -111,22 +122,22 @@ public class Chillguy {
         }
     }
 
-    private void markTaskAsDone(String command) {
-        int taskIndex = getTaskIndex(command, MARK_COMMAND_PREFIX);
+    private void markTaskAsDone(String arguments) throws ChillguyException {
+        int taskIndex = getTaskIndex(arguments, "mark");
         tasks[taskIndex].markAsDone();
         System.out.println("Nice! I've marked this task as done:");
         System.out.println("  " + tasks[taskIndex]);
     }
 
-    private void markTaskAsNotDone(String command) {
-        int taskIndex = getTaskIndex(command, UNMARK_COMMAND_PREFIX);
+    private void markTaskAsNotDone(String arguments) throws ChillguyException {
+        int taskIndex = getTaskIndex(arguments, "unmark");
         tasks[taskIndex].markAsNotDone();
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + tasks[taskIndex]);
     }
 
-    private void deleteTask(String command) {
-        int taskIndex = getTaskIndex(command, DELETE_COMMAND_PREFIX);
+    private void deleteTask(String arguments) throws ChillguyException {
+        int taskIndex = getTaskIndex(arguments, "delete");
         Task deletedTask = tasks[taskIndex];
 
         for (int i = taskIndex; i < taskCount - 1; i++) {
@@ -148,55 +159,72 @@ public class Chillguy {
         return taskCount + " tasks";
     }
 
-    private int getTaskIndex(String command, String commandPrefix) {
-        int taskNumber = Integer.parseInt(command.substring(commandPrefix.length()));
+    /**
+     * Converts a user-facing task number to an array index only after checking its range.
+     */
+    private int getTaskIndex(String arguments, String commandName) throws ChillguyException {
+        if (arguments.isEmpty()) {
+            throw new ChillguyException("Please include a task number. Use: " + commandName + " INDEX");
+        }
+
+        int taskNumber;
+        try {
+            taskNumber = Integer.parseInt(arguments);
+        } catch (NumberFormatException exception) {
+            throw new ChillguyException("Please enter one whole-number task index. Use: " + commandName + " INDEX");
+        }
+
+        if (taskCount == 0) {
+            throw new ChillguyException("Your task list is empty. Add a task first with todo DESCRIPTION.");
+        }
+        if (taskNumber < 1 || taskNumber > taskCount) {
+            throw new ChillguyException("Please choose a task number from 1 to " + taskCount
+                    + ". Use list to see them.");
+        }
         return taskNumber - 1;
     }
 
-    private void addTodo(String command) {
-        String description = command.substring(TODO_COMMAND_PREFIX.length());
+    private void addTodo(String description) throws ChillguyException {
+        if (description.isBlank()) {
+            throw new ChillguyException("ERROR: Description of todo cannot be empty.");
+        }
         addTask(new Todo(description));
     }
 
-    private void addDeadline(String command) {
-        String details = command.substring(DEADLINE_COMMAND_PREFIX.length());
-        int byIndex = details.indexOf(BY_SEPARATOR);
-        if (!isValidDeadlineDetails(details, byIndex)) {
-            showError(DEADLINE_FORMAT_MESSAGE);
-            return;
+    private void addDeadline(String details) throws ChillguyException {
+        String[] parts = details.split(BY_SEPARATOR, -1);
+        if (parts.length != 2 || parts[0].isBlank() || parts[1].isBlank()) {
+            throw new ChillguyException(DEADLINE_FORMAT_MESSAGE);
         }
 
-        String description = details.substring(0, byIndex);
-        String by = details.substring(byIndex + BY_SEPARATOR.length());
+        String description = parts[0].strip();
+        String by = parts[1].strip();
         addTask(new Deadline(description, by));
     }
 
-    private void addEvent(String command) {
-        String details = command.substring(EVENT_COMMAND_PREFIX.length());
-        int fromIndex = details.indexOf(FROM_SEPARATOR);
-        int toIndex = details.indexOf(TO_SEPARATOR);
-        if (!isValidEventDetails(details, fromIndex, toIndex)) {
-            showError(EVENT_FORMAT_MESSAGE);
-            return;
+    private void addEvent(String details) throws ChillguyException {
+        // Keep empty fields so missing descriptions or times cannot become valid tasks.
+        String[] fromParts = details.split(FROM_SEPARATOR, -1);
+        String[] toParts = details.split(TO_SEPARATOR, -1);
+        if (fromParts.length != 2 || toParts.length != 2
+                || fromParts[0].split(TO_SEPARATOR, -1).length != 1) {
+            throw new ChillguyException(EVENT_FORMAT_MESSAGE);
         }
 
-        String description = details.substring(0, fromIndex);
-        String from = details.substring(fromIndex + FROM_SEPARATOR.length(), toIndex);
-        String to = details.substring(toIndex + TO_SEPARATOR.length());
-        addTask(new Event(description, from, to));
+        String description = fromParts[0].strip();
+        String[] times = fromParts[1].split(TO_SEPARATOR, -1);
+        if (description.isEmpty() || times[0].isBlank() || times[1].isBlank()) {
+            throw new ChillguyException(EVENT_FORMAT_MESSAGE);
+        }
+
+        addTask(new Event(description, times[0].strip(), times[1].strip()));
     }
 
-    private boolean isValidDeadlineDetails(String details, int byIndex) {
-        return byIndex > 0 && byIndex + BY_SEPARATOR.length() < details.length();
-    }
-
-    private boolean isValidEventDetails(String details, int fromIndex, int toIndex) {
-        return fromIndex > 0
-                && toIndex > fromIndex + FROM_SEPARATOR.length()
-                && toIndex + TO_SEPARATOR.length() < details.length();
-    }
-
-    private void addTask(Task task) {
+    private void addTask(Task task) throws ChillguyException {
+        if (taskCount == MAX_TASKS) {
+            throw new ChillguyException("Your list is full (" + MAX_TASKS
+                    + " tasks). Delete a task before adding another.");
+        }
         tasks[taskCount] = task;
         taskCount++;
         System.out.println("Got it. I've added this task:");
