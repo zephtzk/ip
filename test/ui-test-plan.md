@@ -68,6 +68,126 @@ ____________________________________________________________
 
 - Notes: The runner compiles all Java files recursively under `src/main/java`, including subpackages, before running the cases.
 
+### Delete Mixed Task Types
+
+- Aim: Verifies the Level 6 example removes the middle event, preserves task order and status, and supports deleting the last task and a completed deadline using the updated numbering.
+- Command: `java -cp out chillguy.Chillguy`
+- Input:
+
+```text
+todo read book
+deadline return book /by June 6th
+event project meeting /from Aug 6th 2pm /to 4pm
+todo join sports club
+todo borrow book
+mark 1
+mark 2
+mark 4
+list
+delete 3
+list
+unmark 3
+delete 4
+delete 2
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] join sports club
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] borrow book
+Now you have 5 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] join sports club
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+4.[T][X] join sports club
+5.[T][ ] borrow book
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[T][X] join sports club
+4.[T][ ] borrow book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] join sports club
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] borrow book
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [D][X] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[T][ ] join sports club
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: The initial list and `delete 3` reproduce the supplied Level 6 example. Every subsequent index refers to the current list.
+
 ### Add Level 4 Task Types
 
 - Aim: Verifies that `todo`, `deadline`, and `event` commands create tasks with the correct type labels and details.
@@ -711,9 +831,9 @@ ____________________________________________________________
 
 - Notes: Dates and times remain free-form strings. Each required separator must be a separate token and occur exactly once.
 
-### Handle Full Task List and Reuse Space
+### Grow Task List Beyond 100 Tasks
 
-- Aim: Verifies the 100-task boundary rejects every task type without mutation and allows an addition after deletion.
+- Aim: Verifies all task types can be added beyond 100 tasks, deletion renumbers a large list, and marking, unmarking, and adding still work after deletion.
 - Command: `java -cp out chillguy.Chillguy`
 - Input file: `test/fixtures/capacity.input.txt`
 - Expected output file: `test/fixtures/capacity.expected.txt`

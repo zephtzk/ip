@@ -68,6 +68,128 @@ Exit code: 0
 
 Stderr: ''
 
+## Delete Mixed Task Types: PASS
+
+Command: `java -cp out chillguy.Chillguy`
+
+Input:
+
+```text
+todo read book
+deadline return book /by June 6th
+event project meeting /from Aug 6th 2pm /to 4pm
+todo join sports club
+todo borrow book
+mark 1
+mark 2
+mark 4
+list
+delete 3
+list
+unmark 3
+delete 4
+delete 2
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] join sports club
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] borrow book
+Now you have 5 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] join sports club
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+4.[T][X] join sports club
+5.[T][ ] borrow book
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[T][X] join sports club
+4.[T][ ] borrow book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] join sports club
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] borrow book
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [D][X] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[T][ ] join sports club
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
 ## Add Level 4 Task Types: PASS
 
 Command: `java -cp out chillguy.Chillguy`
@@ -723,7 +845,7 @@ Exit code: 0
 
 Stderr: ''
 
-## Handle Full Task List and Reuse Space: PASS
+## Grow Task List Beyond 100 Tasks: PASS
 
 Command: `java -cp out chillguy.Chillguy`
 
@@ -830,12 +952,14 @@ todo task 97
 todo task 98
 todo task 99
 todo task 100
-todo overflow
-deadline overflow /by Sunday
-event overflow /from Mon /to Tue
+todo extra todo
+deadline extra deadline /by Sunday
+event extra event /from Mon /to Tue
 mark 100
+mark 103
 list
 delete 50
+unmark 102
 deadline replacement /by Friday
 list
 bye
@@ -1354,17 +1478,27 @@ Got it. I've added this task:
 Now you have 100 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Your list is full (100 tasks). Delete a task before adding another.
+Got it. I've added this task:
+  [T][ ] extra todo
+Now you have 101 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Your list is full (100 tasks). Delete a task before adding another.
+Got it. I've added this task:
+  [D][ ] extra deadline (by: Sunday)
+Now you have 102 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Your list is full (100 tasks). Delete a task before adding another.
+Got it. I've added this task:
+  [E][ ] extra event (from: Mon to: Tue)
+Now you have 103 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
   [T][X] task 100
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [E][X] extra event (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -1468,16 +1602,23 @@ Here are the tasks in your list:
 98.[T][ ] task 98
 99.[T][ ] task 99
 100.[T][X] task 100
+101.[T][ ] extra todo
+102.[D][ ] extra deadline (by: Sunday)
+103.[E][X] extra event (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
   [T][ ] task 50
-Now you have 99 tasks in the list.
+Now you have 102 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [E][ ] extra event (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [D][ ] replacement (by: Friday)
-Now you have 100 tasks in the list.
+Now you have 103 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -1580,7 +1721,10 @@ Here are the tasks in your list:
 97.[T][ ] task 98
 98.[T][ ] task 99
 99.[T][X] task 100
-100.[D][ ] replacement (by: Friday)
+100.[T][ ] extra todo
+101.[D][ ] extra deadline (by: Sunday)
+102.[E][ ] extra event (from: Mon to: Tue)
+103.[D][ ] replacement (by: Friday)
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
