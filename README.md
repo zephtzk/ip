@@ -2,6 +2,31 @@
 
 This is a project template for a greenfield Java project named _Chillguy_. Given below are instructions on how to use it.
 
+## Saving and loading tasks
+
+Run Chillguy with Java 25 from the project root. Tasks load from `data/chillguy.txt` at startup.
+Adding, deleting, marking, or unmarking a task automatically saves the list before confirming the change.
+The app creates the data folder on the first save; a missing or empty file starts an empty list.
+The local data folder is ignored by Git.
+
+The file uses UTF-8 and one task per line. Status `1` means done; `0` means not done:
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+Pipes and backslashes inside fields are escaped as `\|` and `\\`; line breaks use `\n` and `\r`.
+Blank lines and an optional initial UTF-8 byte order mark are accepted.
+An unreadable file or malformed record stops startup with an error; fix the file and restart.
+The app leaves the original file untouched in that case.
+
+Saving writes a temporary file and replaces the saved file atomically, so a failed write cannot leave a partial list.
+If saving fails, the attempted task change is undone. Check folder permissions or close programs locking the file,
+then retry the command. The file system must support atomic file replacement.
+Use one running Chillguy instance per data file.
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 25, update Intellij to the most recent version.

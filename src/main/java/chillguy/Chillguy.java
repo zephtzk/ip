@@ -1,9 +1,11 @@
 package chillguy;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import chillguy.exception.ChillguyException;
+import chillguy.storage.Storage;
 import chillguy.task.Deadline;
 import chillguy.task.Event;
 import chillguy.task.Task;
@@ -34,6 +36,7 @@ public class Chillguy {
             """;
 
     private final ArrayList<Task> tasks = new ArrayList<>();
+    private final Storage storage = new Storage(Path.of("data", "chillguy.txt"));
 
     /**
      * Starts the chatbot and processes commands until the user enters {@code bye}.
@@ -49,6 +52,14 @@ public class Chillguy {
 
     private void run() {
         showGreeting();
+        try {
+            tasks.addAll(storage.load());
+        } catch (ChillguyException exception) {
+            showError(exception.getMessage());
+            System.out.println("Your saved file has not been changed.");
+            System.out.println(SEPARATOR);
+            return;
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -129,16 +140,41 @@ public class Chillguy {
 
     private void markTaskAsDone(String arguments) throws ChillguyException {
         int taskIndex = getTaskIndex(arguments, "mark");
-        tasks.get(taskIndex).markAsDone();
+        updateTaskStatus(tasks.get(taskIndex), true);
         System.out.println("Nice! I've marked this task as done:");
         System.out.println("  " + tasks.get(taskIndex));
     }
 
     private void markTaskAsNotDone(String arguments) throws ChillguyException {
         int taskIndex = getTaskIndex(arguments, "unmark");
-        tasks.get(taskIndex).markAsNotDone();
+        updateTaskStatus(tasks.get(taskIndex), false);
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + tasks.get(taskIndex));
+    }
+
+    /**
+     * Saves a changed completion status, restoring the old status if saving fails.
+     */
+    private void updateTaskStatus(Task task, boolean isDone) throws ChillguyException {
+        boolean wasDone = task.isDone();
+        if (wasDone == isDone) {
+            return;
+        }
+        setTaskStatus(task, isDone);
+        try {
+            storage.save(tasks);
+        } catch (ChillguyException exception) {
+            setTaskStatus(task, wasDone);
+            throw exception;
+        }
+    }
+
+    private void setTaskStatus(Task task, boolean isDone) {
+        if (isDone) {
+            task.markAsDone();
+        } else {
+            task.markAsNotDone();
+        }
     }
 
     /**
@@ -147,6 +183,12 @@ public class Chillguy {
     private void deleteTask(String arguments) throws ChillguyException {
         int taskIndex = getTaskIndex(arguments, "delete");
         Task deletedTask = tasks.remove(taskIndex);
+        try {
+            storage.save(tasks);
+        } catch (ChillguyException exception) {
+            tasks.add(taskIndex, deletedTask);
+            throw exception;
+        }
 
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + deletedTask);
@@ -222,8 +264,17 @@ public class Chillguy {
         addTask(new Event(description, times[0].strip(), times[1].strip()));
     }
 
-    private void addTask(Task task) {
+    /**
+     * Saves a new task before confirming it, undoing the addition if saving fails.
+     */
+    private void addTask(Task task) throws ChillguyException {
         tasks.add(task);
+        try {
+            storage.save(tasks);
+        } catch (ChillguyException exception) {
+            tasks.removeLast();
+            throw exception;
+        }
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
         System.out.println("Now you have " + getTaskCountLabel() + " in the list.");

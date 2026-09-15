@@ -12,11 +12,13 @@ javac -version
 javac 25.0.4
 ```
 
-Build: `javac -d out src/main/java/chillguy/Chillguy.java src/main/java/chillguy/exception/ChillguyException.java src/main/java/chillguy/task/Deadline.java src/main/java/chillguy/task/Event.java src/main/java/chillguy/task/Task.java src/main/java/chillguy/task/Todo.java`
+Build: `javac -d out src/main/java/chillguy/Chillguy.java src/main/java/chillguy/exception/ChillguyException.java src/main/java/chillguy/storage/Storage.java src/main/java/chillguy/task/Deadline.java src/main/java/chillguy/task/Event.java src/main/java/chillguy/task/Task.java src/main/java/chillguy/task/Todo.java`
 
 ## Delete Task: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `0`, storage session `0`.
 
 Input:
 
@@ -68,9 +70,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Delete Mixed Task Types: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `1`, storage session `1`.
 
 Input:
 
@@ -190,9 +196,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Add Level 4 Task Types: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `2`, storage session `2`.
 
 Input:
 
@@ -251,9 +261,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Reject Malformed Deadline: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `3`, storage session `3`.
 
 Input:
 
@@ -286,9 +300,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Reject Malformed Event: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `4`, storage session `4`.
 
 Input:
 
@@ -321,9 +339,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Reject Unknown and Empty Commands: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `5`, storage session `5`.
 
 Input:
 
@@ -431,9 +453,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Validate Task Numbers and Preserve State: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `6`, storage session `6`.
 
 Input:
 
@@ -680,9 +706,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Validate Task Fields and Recover: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `7`, storage session `7`.
 
 Input:
 
@@ -845,9 +875,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## Grow Task List Beyond 100 Tasks: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `8`, storage session `8`.
 
 Input:
 
@@ -1735,9 +1769,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## End of Input After Error: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `9`, storage session `9`.
 
 Input:
 
@@ -1766,9 +1804,13 @@ Exit code: 0
 
 Stderr: ''
 
+- PASS: no temporary save files remain
+
 ## End of Input Without Commands: PASS
 
-Command: `java -cp out chillguy.Chillguy`
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `10`, storage session `10`.
 
 Input:
 
@@ -1792,3 +1834,1179 @@ ____________________________________________________________
 Exit code: 0
 
 Stderr: ''
+
+- PASS: no temporary save files remain
+
+## Save Every Task Type Immediately: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `11`, storage session `persistence`.
+
+Input:
+
+```text
+todo read | book C:\notes\新书
+deadline return book /by June | 6th
+event planning /from Aug 6th 2pm /to 4pm \ UTC
+mark 1
+mark 2
+mark 3
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read | book C:\notes\新书
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June | 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read | book C:\notes\新书
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: June | 6th)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 1 (app still running)
+- PASS: saved data after command 2 (app still running)
+- PASS: saved data after command 3 (app still running)
+- PASS: saved data after command 4 (app still running)
+- PASS: saved data after command 5 (app still running)
+- PASS: saved data after command 6 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Reload Tasks and Unmark: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `12`, storage session `persistence`.
+
+Input:
+
+```text
+list
+unmark 1
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[D][X] return book (by: June | 6th)
+3.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] read | book C:\notes\新书
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 2 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Reload Unmarked Status and Mark: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `13`, storage session `persistence`.
+
+Input:
+
+```text
+list
+mark 1
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read | book C:\notes\新书
+2.[D][X] return book (by: June | 6th)
+3.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read | book C:\notes\新书
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 2 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Reload and Delete the Middle Task: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `14`, storage session `persistence`.
+
+Input:
+
+```text
+list
+delete 2
+list
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[D][X] return book (by: June | 6th)
+3.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [D][X] return book (by: June | 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 2 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Reload Deletion and Save an Empty List: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `15`, storage session `persistence`.
+
+Input:
+
+```text
+list
+delete 2
+delete 1
+list
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][X] read | book C:\notes\新书
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 2 (app still running)
+- PASS: saved data after command 3 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Reload an Empty Saved List: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `16`, storage session `persistence`.
+
+Input:
+
+```text
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Create a Missing File in an Existing Folder: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `17`, storage session `17`.
+
+Input:
+
+```text
+todo first task
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] first task
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 1 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## First Run Without Changes: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `18`, storage session `18`.
+
+Input:
+
+```text
+list
+unknown
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Load Editor Formatting Without Rewriting: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `19`, storage session `19`.
+
+Input:
+
+```text
+list
+mark 1
+unmark 2
+unknown
+delete 9
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: June 6th)
+3.[E][X] meeting (from: 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [D][ ] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 3. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Unknown Task Type: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `20`, storage session `20`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Invalid Completion Status: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `21`, storage session `21`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Missing Description: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `22`, storage session `22`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Missing Deadline Date: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `23`, storage session `23`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Empty Deadline Date: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `24`, storage session `24`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Missing Event End: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `25`, storage session `25`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Empty Event Start: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `26`, storage session `26`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Empty Event End: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `27`, storage session `27`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Extra Fields: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `28`, storage session `28`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Unknown Escape: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `29`, storage session `29`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Trailing Backslash: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `30`, storage session `30`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Reject Saved Truncated Record: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `31`, storage session `31`.
+
+Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved file contents
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Handle Invalid UTF-8: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `32`, storage session `32`.
+
+Input:
+
+```text
+todo must not overwrite
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, I couldn't load tasks from data/chillguy.txt. Check that the path is a readable UTF-8 file.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Handle Directory at the Data File Path: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `33`, storage session `33`.
+
+Input:
+
+```text
+todo must not overwrite
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, I couldn't load tasks from data/chillguy.txt. Check that the path is a readable UTF-8 file.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Handle File at the Data Folder Path: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `34`, storage session `34`.
+
+Input:
+
+```text
+todo must not overwrite
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, I couldn't load tasks from data/chillguy.txt. Check that the path is a readable UTF-8 file.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Recover from Folder Creation Failure: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `35`, storage session `35`.
+
+Input:
+
+```text
+list
+todo retry me
+list
+todo retry me
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] retry me
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 4 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Undo Every Kind of Failed Task Change: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `36`, storage session `36`.
+
+Input:
+
+```text
+list
+todo rejected
+deadline rejected /by Friday
+event rejected /from 1 /to 2
+mark 2
+unmark 1
+delete 2
+list
+mark 2
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] keep todo
+2.[D][ ] keep deadline (by: Friday)
+3.[E][ ] keep event (from: 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] keep todo
+2.[D][ ] keep deadline (by: Friday)
+3.[E][ ] keep event (from: 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] keep deadline (by: Friday)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: saved data after command 8 (app still running)
+- PASS: saved data after command 9 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
