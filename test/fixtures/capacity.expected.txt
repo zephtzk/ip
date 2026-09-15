@@ -508,17 +508,27 @@ Got it. I've added this task:
 Now you have 100 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Your list is full (100 tasks). Delete a task before adding another.
+Got it. I've added this task:
+  [T][ ] extra todo
+Now you have 101 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Your list is full (100 tasks). Delete a task before adding another.
+Got it. I've added this task:
+  [D][ ] extra deadline (by: Sunday)
+Now you have 102 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Your list is full (100 tasks). Delete a task before adding another.
+Got it. I've added this task:
+  [E][ ] extra event (from: Mon to: Tue)
+Now you have 103 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
   [T][X] task 100
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [E][X] extra event (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -622,16 +632,23 @@ Here are the tasks in your list:
 98.[T][ ] task 98
 99.[T][ ] task 99
 100.[T][X] task 100
+101.[T][ ] extra todo
+102.[D][ ] extra deadline (by: Sunday)
+103.[E][X] extra event (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
   [T][ ] task 50
-Now you have 99 tasks in the list.
+Now you have 102 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [E][ ] extra event (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [D][ ] replacement (by: Friday)
-Now you have 100 tasks in the list.
+Now you have 103 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -734,7 +751,10 @@ Here are the tasks in your list:
 97.[T][ ] task 98
 98.[T][ ] task 99
 99.[T][X] task 100
-100.[D][ ] replacement (by: Friday)
+100.[T][ ] extra todo
+101.[D][ ] extra deadline (by: Sunday)
+102.[E][ ] extra event (from: Mon to: Tue)
+103.[D][ ] replacement (by: Friday)
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!

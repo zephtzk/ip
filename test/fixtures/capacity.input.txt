@@ -98,12 +98,14 @@ todo task 97
 todo task 98
 todo task 99
 todo task 100
-todo overflow
-deadline overflow /by Sunday
-event overflow /from Mon /to Tue
+todo extra todo
+deadline extra deadline /by Sunday
+event extra event /from Mon /to Tue
 mark 100
+mark 103
 list
 delete 50
+unmark 102
 deadline replacement /by Friday
 list
 bye

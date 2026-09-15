@@ -1,5 +1,6 @@
 package chillguy;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import chillguy.exception.ChillguyException;
@@ -12,7 +13,6 @@ import chillguy.task.Todo;
  * Runs the Chillguy chatbot.
  */
 public class Chillguy {
-    private static final int MAX_TASKS = 100;
     private static final int SEPARATOR_LENGTH = 60;
     private static final String SEPARATOR = "_".repeat(SEPARATOR_LENGTH);
     private static final String EXIT_COMMAND = "bye";
@@ -33,8 +33,7 @@ public class Chillguy {
               \\____||_| |_|___|_____|______\\_____|____/   |_|\
             """;
 
-    private final Task[] tasks = new Task[MAX_TASKS];
-    private int taskCount;
+    private final ArrayList<Task> tasks = new ArrayList<>();
 
     /**
      * Starts the chatbot and processes commands until the user enters {@code bye}.
@@ -123,34 +122,31 @@ public class Chillguy {
 
     private void showTasks() {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println((i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
         }
     }
 
     private void markTaskAsDone(String arguments) throws ChillguyException {
         int taskIndex = getTaskIndex(arguments, "mark");
-        tasks[taskIndex].markAsDone();
+        tasks.get(taskIndex).markAsDone();
         System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + tasks[taskIndex]);
+        System.out.println("  " + tasks.get(taskIndex));
     }
 
     private void markTaskAsNotDone(String arguments) throws ChillguyException {
         int taskIndex = getTaskIndex(arguments, "unmark");
-        tasks[taskIndex].markAsNotDone();
+        tasks.get(taskIndex).markAsNotDone();
         System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + tasks[taskIndex]);
+        System.out.println("  " + tasks.get(taskIndex));
     }
 
+    /**
+     * Removes the selected task and reports its details and the remaining task count.
+     */
     private void deleteTask(String arguments) throws ChillguyException {
         int taskIndex = getTaskIndex(arguments, "delete");
-        Task deletedTask = tasks[taskIndex];
-
-        for (int i = taskIndex; i < taskCount - 1; i++) {
-            tasks[i] = tasks[i + 1];
-        }
-        taskCount--;
-        tasks[taskCount] = null;
+        Task deletedTask = tasks.remove(taskIndex);
 
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + deletedTask);
@@ -158,15 +154,15 @@ public class Chillguy {
     }
 
     private String getTaskCountLabel() {
-        if (taskCount == 1) {
+        if (tasks.size() == 1) {
             return "1 task";
         }
 
-        return taskCount + " tasks";
+        return tasks.size() + " tasks";
     }
 
     /**
-     * Converts a user-facing task number to an array index only after checking its range.
+     * Converts a user-facing task number to a list index only after checking its range.
      */
     private int getTaskIndex(String arguments, String commandName) throws ChillguyException {
         if (arguments.isEmpty()) {
@@ -180,11 +176,11 @@ public class Chillguy {
             throw new ChillguyException("Please enter one whole-number task index. Use: " + commandName + " INDEX");
         }
 
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             throw new ChillguyException("Your task list is empty. Add a task first with todo DESCRIPTION.");
         }
-        if (taskNumber < 1 || taskNumber > taskCount) {
-            throw new ChillguyException("Please choose a task number from 1 to " + taskCount
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
+            throw new ChillguyException("Please choose a task number from 1 to " + tasks.size()
                     + ". Use list to see them.");
         }
         return taskNumber - 1;
@@ -226,13 +222,8 @@ public class Chillguy {
         addTask(new Event(description, times[0].strip(), times[1].strip()));
     }
 
-    private void addTask(Task task) throws ChillguyException {
-        if (taskCount == MAX_TASKS) {
-            throw new ChillguyException("Your list is full (" + MAX_TASKS
-                    + " tasks). Delete a task before adding another.");
-        }
-        tasks[taskCount] = task;
-        taskCount++;
+    private void addTask(Task task) {
+        tasks.add(task);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
         System.out.println("Now you have " + getTaskCountLabel() + " in the list.");
