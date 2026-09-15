@@ -2,6 +2,63 @@
 
 This is a project template for a greenfield Java project named _Chillguy_. Given below are instructions on how to use it.
 
+## Building and running a fat JAR
+
+Install **JDK 25** and check that `java -version` and `javac -version` both report version 25.
+If `JAVA_HOME` is set, it must point to your JDK 25 installation.
+Run the following commands from the project root (the folder containing `build.gradle`).
+
+### Create the JAR
+
+On Windows PowerShell:
+
+```powershell
+.\gradlew.bat clean shadowJar
+```
+
+On macOS or Linux:
+
+```sh
+sh gradlew clean shadowJar
+```
+
+The included Gradle 9.7.1 wrapper downloads the pinned Gradle version automatically; a separate
+Gradle installation is unnecessary. The first build needs internet access to download Gradle,
+the Shadow plugin, and its dependencies. `clean` removes previous build output, and `shadowJar`
+compiles the application and packages its classes, resources, and runtime dependencies into one JAR.
+
+### Locate and run the JAR
+
+After `BUILD SUCCESSFUL`, find the fat JAR at **`build/libs/chillguy-all.jar`**.
+Run it from the project root with Java 25:
+
+```sh
+java -jar build/libs/chillguy-all.jar
+```
+
+Enter commands such as `todo read book`, `list`, and `bye` in the terminal.
+You can copy this JAR to another folder or computer and run `java -jar chillguy-all.jar` there.
+Java 25 must be installed on that computer; Java itself is not bundled in the JAR.
+Saved tasks live in `data/chillguy.txt` relative to the directory where you launch the app.
+
+### Build configuration
+
+- `settings.gradle` gives the project the stable name `chillguy`.
+- `build.gradle` selects the Java 25 toolchain and applies `application` and Shadow 9.6.1
+  (`com.gradleup.shadow`). The application entry point is `chillguy.Chillguy`; Shadow uses this
+  to set the JAR's `Main-Class` manifest entry so `java -jar` can launch it.
+- The `shadowJar` task fixes the output name as `chillguy-all.jar`. The project currently has no
+  external runtime dependencies; future `implementation` or `runtimeOnly` dependencies will be bundled too.
+- `gradlew`, `gradlew.bat`, and `gradle/wrapper/` provide the wrapper for both platforms.
+  Its distribution checksum verifies the downloaded Gradle archive.
+
+See the [Shadow application plugin documentation](https://gradleup.com/shadow/application-plugin/)
+and [Gradle Java compatibility table](https://docs.gradle.org/current/userguide/compatibility.html).
+
+To run the recorded console tests, install Python 3 and run `python test/run-ui-tests.py`.
+The runner builds the fat JAR and checks both the existing console cases and a direct JAR launch,
+using disposable data folders. Results are saved in `test/ui-test-transcript.md`.
+
 ## Saving and loading tasks
 
 Run Chillguy with Java 25 from the project root. Tasks load from `data/chillguy.txt` at startup.
@@ -38,6 +95,8 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    1. If there are any further prompts, accept the defaults.
 1. Configure the project to use **JDK 25** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
    In the same dialog, set the **Project language level** field to the `SDK default` option.
+1. Load the Gradle project when prompted and set the **Gradle JVM** to **JDK 25** under
+   `Settings` > `Build, Execution, Deployment` > `Build Tools` > `Gradle`. Use the Gradle wrapper.
 1. After that, locate the `src/main/java/chillguy/Chillguy.java` file, right-click it, and choose `Run Chillguy.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
    ```
     ____        _        

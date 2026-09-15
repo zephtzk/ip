@@ -1,6 +1,7 @@
 """Run the recorded console UI plan with Java 25, stopping at the first failure."""
 
 from pathlib import Path
+import os
 import re
 import subprocess
 import sys
@@ -159,6 +160,16 @@ def main():
         TRANSCRIPT.write_text("\n".join(transcript), encoding="utf-8")
         raise RuntimeError("Compilation failed or produced unexpected output; see transcript")
 
+    wrapper = [str(ROOT / "gradlew.bat")] if os.name == "nt" else ["sh", str(ROOT / "gradlew")]
+    jar_build = subprocess.run([*wrapper, "--console=plain", "shadowJar"], capture_output=True,
+                               text=True, encoding="utf-8", cwd=ROOT)
+    transcript.append(f"Fat JAR build: `{subprocess.list2cmdline(wrapper)} --console=plain shadowJar`\n\n"
+                      f"```text\n{jar_build.stdout}{jar_build.stderr}```\n\n"
+                      f"Exit code: {jar_build.returncode}\n")
+    if jar_build.returncode:
+        TRANSCRIPT.write_text("\n".join(transcript), encoding="utf-8")
+        raise RuntimeError("Fat JAR build failed; see transcript")
+
     cases = re.split(r"^### ", PLAN.read_text(encoding="utf-8"), flags=re.M)[1:]
     if not cases:
         raise ValueError("No test cases found")
@@ -173,7 +184,11 @@ def run_cases(cases, transcript, sandbox_root):
     for index, case in enumerate(cases):
         name = case.splitlines()[0]
         command = re.search(r"- Command: `([^`]+)`", case).group(1)
-        if command != "java -cp out chillguy.Chillguy":
+        if command == "java -cp out chillguy.Chillguy":
+            launch_arguments = ["-cp", str(ROOT / "out"), "chillguy.Chillguy"]
+        elif command == "java -jar build/libs/chillguy-all.jar":
+            launch_arguments = ["-jar", str(ROOT / "build/libs/chillguy-all.jar")]
+        else:
             raise ValueError(f"Unsupported command: {command}")
         inputs = read_block(case, "Input")
         expected = read_block(case, "Expected output")
@@ -186,7 +201,7 @@ def run_cases(cases, transcript, sandbox_root):
         workspace = sessions[session]
         before = storage_snapshot(workspace)
         arguments = ["java", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8",
-                     "-cp", str(ROOT / "out"), "chillguy.Chillguy"]
+                     *launch_arguments]
         actual, checks = run_case(arguments, inputs, workspace, case)
         if re.search(r"- Expected saved tasks(?: file)?:", case):
             saved = workspace / "data/chillguy.txt"

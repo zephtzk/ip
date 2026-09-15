@@ -2,10 +2,15 @@
 
 This file records console UI test cases for this project. Update it whenever a code change affects commands, console inputs, or expected output.
 
-Run all cases with Java 25 and Python 3 using `python test/run-ui-tests.py`. The runner compiles the app, compares exact output and stderr, stops at the first failure, and writes `test/ui-test-transcript.md`.
+Run all cases with Java 25 and Python 3 using `python test/run-ui-tests.py`. The runner compiles the app,
+builds the fat JAR with the Gradle wrapper (`.\gradlew.bat --console=plain shadowJar` on Windows,
+`sh gradlew --console=plain shadowJar` on macOS/Linux), compares exact output and stderr,
+stops at the first failure, and writes `test/ui-test-transcript.md`.
+The first build requires internet access to download Gradle and plugin dependencies.
 
 The runner starts each case in a disposable working directory under `_temp/`, using the absolute
-path to the repository's `out` directory as the classpath. This explicitly overrides the default
+path to the repository's `out` directory as the classpath, or the absolute path to
+`build/libs/chillguy-all.jar` for JAR cases. This explicitly overrides the default
 repository-root working directory so tests cannot overwrite personal `data/chillguy.txt` files.
 The displayed command is the equivalent command for a manual run from the repository root.
 The runner sets Java stdout/stderr encoding to UTF-8 for reproducible Unicode output.
@@ -28,6 +33,58 @@ Each test case should include:
 - Notes: Setup, cleanup, assumptions, or intentionally ignored output.
 
 ## Test Cases
+
+### Run the Fat JAR
+
+- Aim: Verifies that the Shadow JAR launches through its manifest without an external classpath,
+  includes the task and storage classes, and supports adding, listing, and saving a task.
+- Command: `java -jar build/libs/chillguy-all.jar`
+- Input:
+
+```text
+todo read book
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | read book
+```
+
+- Notes: The runner builds the JAR first and launches it in an isolated working directory with
+  no existing data folder. Expect exit code 0, empty stderr, and no temporary save files.
+  For distribution verification, copy only `build/libs/chillguy-all.jar` into an empty temporary
+  folder, open the terminal in that folder, and run `java -jar "chillguy-all.jar"` with the same
+  input and expected output above. The saved tasks must be created in that folder's
+  `data/chillguy.txt`. This explicitly overrides the repository-root working directory.
 
 ### Delete Task
 
