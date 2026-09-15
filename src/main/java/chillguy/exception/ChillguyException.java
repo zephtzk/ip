@@ -1,7 +1,7 @@
 package chillguy.exception;
 
 /**
- * Represents invalid user input that the chatbot can explain and recover from.
+ * Represents an input or storage error that the chatbot can explain to the user.
  */
 public class ChillguyException extends Exception {
     /**
@@ -11,5 +11,15 @@ public class ChillguyException extends Exception {
      */
     public ChillguyException(String message) {
         super(message);
+    }
+
+    /**
+     * Creates a user-facing error while retaining the underlying storage failure.
+     *
+     * @param message Explanation to display in the console.
+     * @param cause Original exception that caused the failure.
+     */
+    public ChillguyException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

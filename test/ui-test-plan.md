@@ -4,6 +4,19 @@ This file records console UI test cases for this project. Update it whenever a c
 
 Run all cases with Java 25 and Python 3 using `python test/run-ui-tests.py`. The runner compiles the app, compares exact output and stderr, stops at the first failure, and writes `test/ui-test-transcript.md`.
 
+The runner starts each case in a disposable working directory under `_temp/`, using the absolute
+path to the repository's `out` directory as the classpath. This explicitly overrides the default
+repository-root working directory so tests cannot overwrite personal `data/chillguy.txt` files.
+The displayed command is the equivalent command for a manual run from the repository root.
+The runner sets Java stdout/stderr encoding to UTF-8 for reproducible Unicode output.
+
+Each case starts with no data folder unless its storage setup or initial saved tasks specify otherwise.
+Cases with the same `Storage session` share only their temporary data directory, each in a new Java process.
+`Saved tasks after command N` checks disk contents while the app is still running; `Expected saved tasks`
+checks the file after the session. `Expected storage unchanged` compares all storage paths and bytes.
+`Storage block` applies a test-owned blocker after command 1 and removes it after the specified restore command.
+The runner checks that temporary save files have been cleaned up and deletes its sandboxes when finished.
+
 ## Test Case Format
 
 Each test case should include:
@@ -893,3 +906,1396 @@ ____________________________________________________________
 ```
 
 - Notes: Input is empty; no command or goodbye output is expected.
+
+### Save Every Task Type Immediately
+
+- Aim: Verifies folder creation and autosaving after every addition and status change, including Unicode, pipes, and backslashes.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage session: `persistence`
+
+- Input:
+
+```text
+todo read | book C:\notes\新书
+deadline return book /by June | 6th
+event planning /from Aug 6th 2pm /to 4pm \ UTC
+mark 1
+mark 2
+mark 3
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read | book C:\notes\新书
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June | 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read | book C:\notes\新书
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: June | 6th)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 1:
+
+```text
+T | 0 | read \| book C:\\notes\\新书
+```
+
+- Saved tasks after command 2:
+
+```text
+T | 0 | read \| book C:\\notes\\新书
+D | 0 | return book | June \| 6th
+```
+
+- Saved tasks after command 3:
+
+```text
+T | 0 | read \| book C:\\notes\\新书
+D | 0 | return book | June \| 6th
+E | 0 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 4:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+D | 0 | return book | June \| 6th
+E | 0 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 5:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 0 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 6:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Notes: Starts without a data folder. Disk checkpoints run after command responses while Java is still running. Ends at EOF without bye. The next five cases reuse this data directory in fresh Java processes.
+
+### Reload Tasks and Unmark
+
+- Aim: Verifies restoration of all task fields and statuses after restart, and immediate persistence of unmark.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage session: `persistence`
+
+- Input:
+
+```text
+list
+unmark 1
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[D][X] return book (by: June | 6th)
+3.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] read | book C:\notes\新书
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 2:
+
+```text
+T | 0 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Notes: Continues the persistence storage session; ends at EOF.
+
+### Reload Unmarked Status and Mark
+
+- Aim: Verifies the previous unmark survived restart, then saves a new mark.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage session: `persistence`
+
+- Input:
+
+```text
+list
+mark 1
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read | book C:\notes\新书
+2.[D][X] return book (by: June | 6th)
+3.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read | book C:\notes\新书
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 2:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+D | 1 | return book | June \| 6th
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Notes: Continues the persistence storage session; ends at EOF.
+
+### Reload and Delete the Middle Task
+
+- Aim: Verifies deletion is immediately saved and preserves the other tasks and their order.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage session: `persistence`
+
+- Input:
+
+```text
+list
+delete 2
+list
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[D][X] return book (by: June | 6th)
+3.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [D][X] return book (by: June | 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Saved tasks after command 2:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+E | 1 | planning | Aug 6th 2pm | 4pm \\ UTC
+```
+
+- Notes: Continues the persistence storage session; ends at EOF.
+
+### Reload Deletion and Save an Empty List
+
+- Aim: Verifies deletion survived restart and deleting the last task empties the saved file.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage session: `persistence`
+
+- Input:
+
+```text
+list
+delete 2
+delete 1
+list
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read | book C:\notes\新书
+2.[E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][X] planning (from: Aug 6th 2pm to: 4pm \ UTC)
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][X] read | book C:\notes\新书
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+```
+
+- Saved tasks after command 2:
+
+```text
+T | 1 | read \| book C:\\notes\\新书
+```
+
+- Saved tasks after command 3:
+
+```text
+```
+
+- Notes: Continues the persistence storage session; ends at EOF.
+
+### Reload an Empty Saved List
+
+- Aim: Verifies an empty saved file loads successfully and read-only commands leave it unchanged.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage session: `persistence`
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+```
+
+- Notes: Final case in the persistence storage session.
+
+### Create a Missing File in an Existing Folder
+
+- Aim: Verifies the first save creates a missing data file when the folder already exists.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage setup: `missing-file`
+
+- Input:
+
+```text
+todo first task
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] first task
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | first task
+```
+
+- Saved tasks after command 1:
+
+```text
+T | 0 | first task
+```
+
+- Notes: Uses a fresh isolated working directory. Exit code must be zero and stderr empty.
+
+### First Run Without Changes
+
+- Aim: Verifies read-only and invalid commands do not create a data folder or file.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+list
+unknown
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: Uses a fresh isolated working directory. Exit code must be zero and stderr empty.
+
+### Load Editor Formatting Without Rewriting
+
+- Aim: Verifies blank lines, a UTF-8 BOM, surrounding field spaces, and no final newline load without rewriting the file.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks file: `test/fixtures/storage-editor.txt`
+
+- Input:
+
+```text
+list
+mark 1
+unmark 2
+unknown
+delete 9
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: June 6th)
+3.[E][X] meeting (from: 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [D][ ] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+ERROR: Unknown command.
+____________________________________________________________
+____________________________________________________________
+Please choose a task number from 1 to 3. Use list to see them.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Expected saved tasks file: `test/fixtures/storage-editor.txt`
+
+- Notes: The fixture has a UTF-8 BOM and no final newline. The runner writes the exact fixture bytes. No-op marks/unmarks and invalid commands must not rewrite storage.
+
+### Reject Saved Unknown Task Type
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+Q | 0 | invalid
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+Q | 0 | invalid
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Invalid Completion Status
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+T | 2 | invalid
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+T | 2 | invalid
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Missing Description
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 |
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 |
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Missing Deadline Date
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+D | 0 | return book
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+D | 0 | return book
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Empty Deadline Date
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+D | 0 | return book |
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+D | 0 | return book |
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Missing Event End
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+E | 0 | meeting | 2pm
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+E | 0 | meeting | 2pm
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Empty Event Start
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+E | 0 | meeting | | 4pm
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+E | 0 | meeting | | 4pm
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Empty Event End
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+E | 0 | meeting | 2pm |
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+E | 0 | meeting | 2pm |
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Extra Fields
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 | read book | extra
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 | read book | extra
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Unknown Escape
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 | bad\q
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 | bad\q
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Trailing Backslash
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 | bad\
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+T | 0 | bad\
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Reject Saved Truncated Record
+
+- Aim: Verifies an invalid record on line 2 stops startup without changing any existing data.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Initial saved tasks:
+
+```text
+T | 0 | keep before
+T
+T | 1 | keep after
+```
+
+- Input:
+
+```text
+todo must not overwrite
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, data/chillguy.txt has invalid task data on line 2. Fix the file and restart Chillguy.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | keep before
+T
+T | 1 | keep after
+```
+
+- Notes: The app must stop before processing input; it must not load or save a partial list.
+
+### Handle Invalid UTF-8
+
+- Aim: Verifies an unreadable storage path produces a friendly error and leaves existing storage untouched.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage setup: `invalid-utf8`
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+todo must not overwrite
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, I couldn't load tasks from data/chillguy.txt. Check that the path is a readable UTF-8 file.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Notes: Uses a fresh isolated working directory. Exit code must be zero and stderr empty.
+
+### Handle Directory at the Data File Path
+
+- Aim: Verifies an unreadable storage path produces a friendly error and leaves existing storage untouched.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage setup: `file-is-directory`
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+todo must not overwrite
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, I couldn't load tasks from data/chillguy.txt. Check that the path is a readable UTF-8 file.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Notes: Uses a fresh isolated working directory. Exit code must be zero and stderr empty.
+
+### Handle File at the Data Folder Path
+
+- Aim: Verifies an unreadable storage path produces a friendly error and leaves existing storage untouched.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage setup: `parent-is-file`
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+todo must not overwrite
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+Sorry, I couldn't load tasks from data/chillguy.txt. Check that the path is a readable UTF-8 file.
+Your saved file has not been changed.
+____________________________________________________________
+```
+
+- Notes: Uses a fresh isolated working directory. Exit code must be zero and stderr empty.
+
+### Recover from Folder Creation Failure
+
+- Aim: Verifies a failed save adds no task, prints no success message, and allows retry after the folder problem is fixed.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage block: `folder`
+- Restore storage after command: `3`
+
+- Input:
+
+```text
+list
+todo retry me
+list
+todo retry me
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] retry me
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 0 | retry me
+```
+
+- Saved tasks after command 4:
+
+```text
+T | 0 | retry me
+```
+
+- Notes: After command 1 completes, create a file named data. Remove that blocker after command 3 completes. All paths are inside the disposable test sandbox.
+
+### Undo Every Kind of Failed Task Change
+
+- Aim: Verifies failed additions, marks, unmarks, and deletion preserve task order/status and the previous saved bytes.
+- Command: `java -cp out chillguy.Chillguy`
+- Storage block: `file`
+- Restore storage after command: `8`
+
+- Initial saved tasks:
+
+```text
+T | 1 | keep todo
+D | 0 | keep deadline | Friday
+E | 0 | keep event | 2pm | 4pm
+```
+
+- Input:
+
+```text
+list
+todo rejected
+deadline rejected /by Friday
+event rejected /from 1 /to 2
+mark 2
+unmark 1
+delete 2
+list
+mark 2
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] keep todo
+2.[D][ ] keep deadline (by: Friday)
+3.[E][ ] keep event (from: 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save tasks to data/chillguy.txt. No changes were made. Check that the data folder is writable and the file is not in use.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] keep todo
+2.[D][ ] keep deadline (by: Friday)
+3.[E][ ] keep event (from: 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] keep deadline (by: Friday)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Expected saved tasks:
+
+```text
+T | 1 | keep todo
+D | 1 | keep deadline | Friday
+E | 0 | keep event | 2pm | 4pm
+```
+
+- Saved tasks after command 8:
+
+```text
+T | 1 | keep todo
+D | 0 | keep deadline | Friday
+E | 0 | keep event | 2pm | 4pm
+```
+
+- Saved tasks after command 9:
+
+```text
+T | 1 | keep todo
+D | 1 | keep deadline | Friday
+E | 0 | keep event | 2pm | 4pm
+```
+
+- Notes: After command 1, temporarily rename the original file and put a nonempty directory at data/chillguy.txt to force replacement failure. Restore the original immediately after command 8, verify its bytes, then retry mark 2. No temporary save files may remain.
