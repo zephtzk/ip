@@ -84,6 +84,24 @@ If saving fails, the attempted task change is undone. Check folder permissions o
 then retry the command. The file system must support atomic file replacement.
 Use one running Chillguy instance per data file.
 
+## Code organization (A-MoreOOP)
+
+- `Chillguy` creates the collaborators, loads saved tasks, and dispatches parsed commands.
+- `ui.Ui` reads console input and displays greetings, task lists, confirmations, and errors.
+- `parser.Parser` validates command syntax and creates a `Command` record containing the
+  operation, a new task when needed, and a task number when needed. Parsing does not change saved tasks.
+- `task.TaskList` owns the ordered collection, checks task-number bounds, and performs additions,
+  deletions, and status changes. It saves each change through `Storage` and undoes it if saving fails.
+- `storage.Storage` retains responsibility for reading and writing the task file.
+
+This keeps syntax, presentation, and task changes in separate classes while preserving the console
+messages and storage format. `TaskList` deliberately depends on `Storage` so saving and rollback
+cannot be omitted by the command dispatcher. The tradeoff is that task operations require storage;
+a separate service could manage persistence if an in-memory-only task list becomes necessary.
+
+The command record and one dispatch switch keep this increment small. Separate command subclasses
+could be useful when commands develop substantially different execution logic, at the cost of more files.
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 25, update Intellij to the most recent version.

@@ -2,6 +2,9 @@
 
 This file records console UI test cases for this project. Update it whenever a code change affects commands, console inputs, or expected output.
 
+For A-MoreOOP, run all existing cases unchanged to check that extracting `Ui`, `Parser`, and
+`TaskList` preserves command validation, exact messages, saved data, and rollback after failed saves.
+
 Run all cases with Java 25 and Python 3 using `python test/run-ui-tests.py`. The runner compiles the app,
 builds the fat JAR with the Gradle wrapper (`.\gradlew.bat --console=plain shadowJar` on Windows,
 `sh gradlew --console=plain shadowJar` on macOS/Linux), compares exact output and stderr,
