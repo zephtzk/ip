@@ -54,7 +54,9 @@ for the new release. Keep the existing `A-Jar` release intact.
 - Full command/input/output record: [Week 7 UI transcript](week7-ui-test-transcript.md).
 - Javadoc passes with `javadoc -quiet -private -Xdoclint:all,-missing`.
   Optional missing Javadoc tags are excluded from that check.
-- `git diff --check` passes. No Java behavior or UI expectations needed changes.
+- Documentation whitespace checks pass. The test transcript deliberately retains
+  trailing spaces in inputs that test whitespace handling. No Java behavior or
+  UI expectations needed changes.
 - Existing guide edits and previous verification transcripts were preserved.
 
 ## Publication follow-through
@@ -62,13 +64,18 @@ for the new release. Keep the existing `A-Jar` release intact.
 GitHub Pages is configured for `master` and `/docs`; its build status is
 `built`. No Pages setting change is needed.
 
-This audit and its test transcript are being submitted through
-`codex/week7-audit` for a real pull request into the student's fork.
-The Week 7 release will use the existing `A-UserGuide` tag, whose application
+This audit and its test transcript were merged through
+[PR #1](https://github.com/zephtzk/ip/pull/1) at 14:19:30 Singapore time on
+29 September 2026, producing merge commit `77dbba5`.
+
+The [Week 7 release](https://github.com/zephtzk/ip/releases/tag/A-UserGuide)
+was published at 14:19:47 Singapore time on 29 September 2026, inside the
+required window. It uses the existing `A-UserGuide` tag, whose application
 sources match the tested JAR. The earlier `A-Jar` release is retained.
 
 The release artifact is `build/libs/chillguy-all.jar` (20,887 bytes).
 Its SHA-256 is
-`03531a30771abe09a3dfff3bbd84606646932ddac4da82026527f13a89e9e9f`.
-PR merge status and release publication must be verified on GitHub after
-those actions complete. The dashboard may update later.
+`03531a30771abae09a3dfff3bbd84606646932ddac4da82026527f13a89e9e9f`.
+The public download matches that checksum, and the published user guide
+returns HTTP 200. GitHub confirms the PR is merged and the release is public.
+The dashboard may update later.
