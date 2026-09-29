@@ -19,15 +19,24 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /**
+     * Returns the due date or time as supplied when the task was created.
+     */
     public String getBy() {
         return by;
     }
 
+    /**
+     * Returns {@code D}, the icon identifying a deadline task.
+     */
     @Override
     public String getTaskTypeIcon() {
         return TASK_TYPE_ICON;
     }
 
+    /**
+     * Returns the task's console representation with its due date or time appended.
+     */
     @Override
     public String toString() {
         return super.toString() + " (by: " + by + ")";

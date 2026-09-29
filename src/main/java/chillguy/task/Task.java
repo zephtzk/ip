@@ -17,10 +17,16 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    /**
+     * Returns the task description used for display, searching, and storage.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns whether this task has been marked as done.
+     */
     public boolean isDone() {
         return isDone;
     }
@@ -55,6 +61,9 @@ public abstract class Task {
      */
     public abstract String getTaskTypeIcon();
 
+    /**
+     * Returns the task's type and status icons followed by its description for console display.
+     */
     @Override
     public String toString() {
         return "[" + getTaskTypeIcon() + "][" + getStatusIcon() + "] " + description;

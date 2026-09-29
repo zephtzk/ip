@@ -15,6 +15,9 @@ public class Todo extends Task {
         super(description);
     }
 
+    /**
+     * Returns {@code T}, the icon identifying a todo task.
+     */
     @Override
     public String getTaskTypeIcon() {
         return TASK_TYPE_ICON;

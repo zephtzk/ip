@@ -81,6 +81,9 @@ public class Ui {
         showNumberedTasks(tasks);
     }
 
+    /**
+     * Prints tasks in the supplied order with consecutive numbers starting at one.
+     */
     private void showNumberedTasks(List<Task> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
@@ -103,6 +106,9 @@ public class Ui {
         showTaskAndCount(task, count);
     }
 
+    /**
+     * Prints the affected task and the total task count, choosing the singular or plural label.
+     */
     private void showTaskAndCount(Task task, int count) {
         System.out.println("  " + task);
         String countLabel = count == 1 ? "1 task" : count + " tasks";

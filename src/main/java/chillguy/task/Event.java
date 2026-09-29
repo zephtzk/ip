@@ -22,19 +22,31 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * Returns the start date or time as supplied when the event was created.
+     */
     public String getFrom() {
         return from;
     }
 
+    /**
+     * Returns the end date or time as supplied when the event was created.
+     */
     public String getTo() {
         return to;
     }
 
+    /**
+     * Returns {@code E}, the icon identifying an event task.
+     */
     @Override
     public String getTaskTypeIcon() {
         return TASK_TYPE_ICON;
     }
 
+    /**
+     * Returns the task's console representation with its start and end dates or times appended.
+     */
     @Override
     public String toString() {
         return super.toString() + " (from: " + from + " to: " + to + ")";

@@ -22,6 +22,9 @@ public class TaskList {
         this.storage = storage;
     }
 
+    /**
+     * Returns the number of tasks, including both completed and incomplete tasks.
+     */
     public int size() {
         return tasks.size();
     }
@@ -106,6 +109,9 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Changes a task's in-memory completion status without saving, including during rollback.
+     */
     private void setTaskStatus(Task task, boolean isDone) {
         if (isDone) {
             task.markAsDone();

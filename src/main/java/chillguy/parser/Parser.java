@@ -56,12 +56,27 @@ public class Parser {
         };
     }
 
+    /**
+     * Rejects extra input for commands that take no arguments.
+     *
+     * @param commandName Command name to include in the usage hint.
+     * @param arguments Stripped text following the command name.
+     * @throws ChillguyException If any arguments are present.
+     */
     private void requireNoArguments(String commandName, String arguments) throws ChillguyException {
         if (!arguments.isEmpty()) {
             throw new ChillguyException("The " + commandName + " command takes no extra input. Use: " + commandName);
         }
     }
 
+    /**
+     * Parses a task number, leaving range validation to the task list.
+     *
+     * @param arguments Text containing a single integer.
+     * @param commandName Command name to include in the usage hint.
+     * @return The supplied task number without converting it to a list index.
+     * @throws ChillguyException If the argument is missing or cannot be parsed as an integer.
+     */
     private int parseTaskNumber(String arguments, String commandName) throws ChillguyException {
         if (arguments.isEmpty()) {
             throw new ChillguyException("Please include a task number. Use: " + commandName + " INDEX");
@@ -77,6 +92,11 @@ public class Parser {
         return taskNumber;
     }
 
+    /**
+     * Creates a todo from a nonblank description.
+     *
+     * @throws ChillguyException If the description is blank.
+     */
     private Task parseTodo(String description) throws ChillguyException {
         if (description.isBlank()) {
             throw new ChillguyException("ERROR: Description of todo cannot be empty.");
@@ -84,6 +104,11 @@ public class Parser {
         return new Todo(description);
     }
 
+    /**
+     * Creates a deadline from a description and a due date separated by {@code /by}.
+     *
+     * @throws ChillguyException If the separator or either required field is missing or invalid.
+     */
     private Task parseDeadline(String details) throws ChillguyException {
         String[] parts = details.split(BY_SEPARATOR, -1);
         if (parts.length != 2 || parts[0].isBlank() || parts[1].isBlank()) {
@@ -95,6 +120,11 @@ public class Parser {
         return new Deadline(description, by);
     }
 
+    /**
+     * Creates an event after checking the order of {@code /from} and {@code /to} and all required fields.
+     *
+     * @throws ChillguyException If separators are missing, repeated, or out of order, or a field is blank.
+     */
     private Task parseEvent(String details) throws ChillguyException {
         // Keep empty fields so missing descriptions or times cannot become valid tasks.
         String[] fromParts = details.split(FROM_SEPARATOR, -1);

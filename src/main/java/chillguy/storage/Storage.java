@@ -86,6 +86,9 @@ public class Storage {
         return parent == null || Files.isDirectory(parent);
     }
 
+    /**
+     * Wraps a read failure with the task file's location and a recovery hint for the user.
+     */
     private ChillguyException createLoadException(IOException cause) {
         return new ChillguyException("Sorry, I couldn't load tasks from " + getDisplayPath()
                 + ". Check that the path is a readable UTF-8 file.", cause);
@@ -124,6 +127,9 @@ public class Storage {
         }
     }
 
+    /**
+     * Returns the task file path with forward slashes for consistent console messages.
+     */
     private String getDisplayPath() {
         return filePath.toString().replace('\\', '/');
     }
@@ -142,6 +148,9 @@ public class Storage {
         }
     }
 
+    /**
+     * Serializes a task's type, completion status, and escaped fields into one storage record.
+     */
     private String encodeTask(Task task) {
         List<String> fields = new ArrayList<>();
         fields.add(task.getTaskTypeIcon());
@@ -156,11 +165,19 @@ public class Storage {
         return String.join(" | ", fields);
     }
 
+    /**
+     * Escapes backslashes, pipes, and line breaks so a field fits within one pipe-separated record.
+     */
     private String escapeField(String field) {
         return field.replace("\\", "\\\\").replace("|", "\\|")
                 .replace("\n", "\\n").replace("\r", "\\r");
     }
 
+    /**
+     * Reconstructs a task and its completion status from a validated storage record.
+     *
+     * @throws IllegalArgumentException If the record has invalid escapes, fields, type, or status.
+     */
     private Task decodeTask(String line) {
         List<String> fields = splitFields(line);
         if (fields.size() < 3 || !(fields.get(1).equals("0") || fields.get(1).equals("1"))) {
