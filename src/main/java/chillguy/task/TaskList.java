@@ -35,6 +35,23 @@ public class TaskList {
     }
 
     /**
+     * Returns tasks whose descriptions contain the given case-sensitive text, in stored order.
+     * Leaves the task list and saved file unchanged.
+     *
+     * @param keyword Nonempty search text validated by the parser.
+     * @return A snapshot of matching tasks with an unmodifiable list structure.
+     */
+    public List<Task> find(String keyword) {
+        List<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+        return List.copyOf(matches);
+    }
+
+    /**
      * Adds and saves a task, removing it again if saving fails.
      */
     public void add(Task task) throws ChillguyException {

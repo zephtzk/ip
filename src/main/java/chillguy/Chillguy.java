@@ -81,6 +81,7 @@ public class Chillguy {
                 return true;
             }
             case LIST -> ui.showTasks(tasks.getTasks());
+            case FIND -> ui.showMatchingTasks(tasks.find(command.keyword()));
             case ADD -> {
                 tasks.add(command.task());
                 ui.showAddedTask(command.task(), tasks.size());

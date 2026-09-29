@@ -2359,3 +2359,211 @@ E | 0 | keep event | 2pm | 4pm
 ```
 
 - Notes: After command 1, temporarily rename the original file and put a nonempty directory at data/chillguy.txt to force replacement failure. Restore the original immediately after command 8, verify its bytes, then retry mark 2. No temporary save files may remain.
+
+### Find Descriptions Across Task Types
+
+- Aim: Checks loaded tasks, mixed completion states, result numbering, substring and phrase matching, case sensitivity, literal punctuation, and description-only searches. Searching preserves storage bytes and task order.
+- Command: `java -jar build/libs/chillguy-all.jar`
+- Initial saved tasks:
+
+```text
+T | 0 | buy milk
+T | 1 | read book
+D | 1 | return book | June 6th
+E | 0 | book club | Monday | Tuesday
+T | 0 | Book review
+T | 0 | notebook
+```
+
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+find book
+  find   read book  
+find Book
+find June
+find Monday
+find [X]
+find .*
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[E][ ] book club (from: Monday to: Tuesday)
+4.[T][ ] notebook
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] Book review
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] buy milk
+2.[T][X] read book
+3.[D][X] return book (by: June 6th)
+4.[E][ ] book club (from: Monday to: Tuesday)
+5.[T][ ] Book review
+6.[T][ ] notebook
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: Uses the isolated storage and cleanup rules above.
+
+### Find Empty List and Reject Missing Keyword
+
+- Aim: Checks empty results, missing and whitespace-only keywords, and recovery without creating storage.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected storage unchanged: `yes`
+
+- Input:
+
+```text
+find book
+find
+find   
+find book
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Please include a search keyword. Use: find KEYWORD
+____________________________________________________________
+____________________________________________________________
+Please include a search keyword. Use: find KEYWORD
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: Uses the isolated storage and cleanup rules above.
+
+### Find Reflects Task Changes
+
+- Aim: Checks that searches reflect additions, status changes, and deletions in the current session.
+- Command: `java -cp out chillguy.Chillguy`
+- Expected saved tasks:
+
+```text
+```
+
+- Input:
+
+```text
+todo read book
+find book
+mark 1
+find book
+unmark 1
+find book
+delete 1
+find book
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] read book
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+- Notes: Uses the isolated storage and cleanup rules above.

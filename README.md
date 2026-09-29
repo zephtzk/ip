@@ -59,6 +59,16 @@ To run the recorded console tests, install Python 3 and run `python test/run-ui-
 The runner builds the fat JAR and checks both the existing console cases and a direct JAR launch,
 using disposable data folders. Results are saved in `test/ui-test-transcript.md`.
 
+## Finding tasks
+
+Use `find KEYWORD` to search task descriptions, for example `find book`.
+Matching is case-sensitive and accepts partial words or a phrase such as `find read book`.
+Dates, times, task types, and completion icons are not searched.
+Results keep their stored order and completion status, with numbering starting at 1.
+Use `list` to get the full-list task numbers before marking, unmarking, or deleting a task.
+Searching does not change tasks or the saved file. An empty keyword shows usage guidance;
+an empty list or a search with no matches shows `No matching tasks found.`
+
 ## Saving and loading tasks
 
 Run Chillguy with Java 25 from the project root. Tasks load from `data/chillguy.txt` at startup.

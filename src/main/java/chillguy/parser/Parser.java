@@ -38,14 +38,20 @@ public class Parser {
         return switch (commandName) {
             case "bye", "list" -> {
                 requireNoArguments(commandName, arguments);
-                yield new Command(commandName.equals("bye") ? Type.EXIT : Type.LIST, null, 0);
+                yield new Command(commandName.equals("bye") ? Type.EXIT : Type.LIST, null, 0, null);
             }
-            case "mark" -> new Command(Type.MARK, null, parseTaskNumber(arguments, commandName));
-            case "unmark" -> new Command(Type.UNMARK, null, parseTaskNumber(arguments, commandName));
-            case "delete" -> new Command(Type.DELETE, null, parseTaskNumber(arguments, commandName));
-            case "todo" -> new Command(Type.ADD, parseTodo(arguments), 0);
-            case "deadline" -> new Command(Type.ADD, parseDeadline(arguments), 0);
-            case "event" -> new Command(Type.ADD, parseEvent(arguments), 0);
+            case "find" -> {
+                if (arguments.isEmpty()) {
+                    throw new ChillguyException("Please include a search keyword. Use: find KEYWORD");
+                }
+                yield new Command(Type.FIND, null, 0, arguments);
+            }
+            case "mark" -> new Command(Type.MARK, null, parseTaskNumber(arguments, commandName), null);
+            case "unmark" -> new Command(Type.UNMARK, null, parseTaskNumber(arguments, commandName), null);
+            case "delete" -> new Command(Type.DELETE, null, parseTaskNumber(arguments, commandName), null);
+            case "todo" -> new Command(Type.ADD, parseTodo(arguments), 0, null);
+            case "deadline" -> new Command(Type.ADD, parseDeadline(arguments), 0, null);
+            case "event" -> new Command(Type.ADD, parseEvent(arguments), 0, null);
             default -> throw new ChillguyException("ERROR: Unknown command.");
         };
     }

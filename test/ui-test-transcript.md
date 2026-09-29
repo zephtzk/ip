@@ -17,13 +17,14 @@ Build: `javac -d out src/main/java/chillguy/Chillguy.java src/main/java/chillguy
 Fat JAR build: `"C:\Users\zepht\Documents\CS2113 iP\ip\gradlew.bat" --console=plain shadowJar`
 
 ```text
-> Task :compileJava UP-TO-DATE
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :compileJava
 > Task :processResources NO-SOURCE
-> Task :classes UP-TO-DATE
-> Task :shadowJar UP-TO-DATE
+> Task :classes
+> Task :shadowJar
 
-BUILD SUCCESSFUL in 863ms
-2 actionable tasks: 2 up-to-date
+BUILD SUCCESSFUL in 6s
+2 actionable tasks: 2 executed
 Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html
 ```
 
@@ -3070,5 +3071,214 @@ Stderr: ''
 
 - PASS: saved data after command 8 (app still running)
 - PASS: saved data after command 9 (app still running)
+- PASS: saved file contents
+- PASS: no temporary save files remain
+
+## Find Descriptions Across Task Types: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -jar "C:\Users\zepht\Documents\CS2113 iP\ip\build\libs\chillguy-all.jar"`
+
+Working directory: isolated sandbox `38`, storage session `38`.
+
+Input:
+
+```text
+find book
+  find   read book  
+find Book
+find June
+find Monday
+find [X]
+find .*
+list
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[E][ ] book club (from: Monday to: Tuesday)
+4.[T][ ] notebook
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] Book review
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] buy milk
+2.[T][X] read book
+3.[D][X] return book (by: June 6th)
+4.[E][ ] book club (from: Monday to: Tuesday)
+5.[T][ ] Book review
+6.[T][ ] notebook
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Find Empty List and Reject Missing Keyword: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `39`, storage session `39`.
+
+Input:
+
+```text
+find book
+find
+find   
+find book
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Please include a search keyword. Use: find KEYWORD
+____________________________________________________________
+____________________________________________________________
+Please include a search keyword. Use: find KEYWORD
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
+- PASS: storage bytes and paths unchanged
+- PASS: no temporary save files remain
+
+## Find Reflects Task Changes: PASS
+
+Command: `java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "C:\Users\zepht\Documents\CS2113 iP\ip\out" chillguy.Chillguy`
+
+Working directory: isolated sandbox `40`, storage session `40`.
+
+Input:
+
+```text
+todo read book
+find book
+mark 1
+find book
+unmark 1
+find book
+delete 1
+find book
+bye
+```
+
+Actual output:
+
+```text
+____________________________________________________________
+   _____ _   _ ___ _     _      _____ _   _ __   __
+  / ____| | | |_ _| |   | |    / ____| | | |\ \ / /
+ | |    | |_| || || |   | |   | |  __| | | | \ V /
+ | |___ |  _  || || |___| |___| | |_ | |_| |  | |
+  \____||_| |_|___|_____|______\_____|____/   |_|
+Hello! I'm Chillguy.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] read book
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+No matching tasks found.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Exit code: 0
+
+Stderr: ''
+
 - PASS: saved file contents
 - PASS: no temporary save files remain
