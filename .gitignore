@@ -15,6 +15,7 @@ bin/
 
 # Temp files
 _temp/
+test/__pycache__/
 
 # Local task data
 /data/
