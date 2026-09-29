@@ -1,6 +1,9 @@
-# Chillguy project template
+# Chillguy
 
-This is a project template for a greenfield Java project named _Chillguy_. Given below are instructions on how to use it.
+Chillguy is a console task manager for todos, deadlines, and events, with keyword search and automatic saving.
+
+Read the [Chillguy User Guide](docs/README.md) for setup instructions, command examples, and troubleshooting.
+The sections below cover building the project and working with its source code.
 
 ## Building and running a fat JAR
 
